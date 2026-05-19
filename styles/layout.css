@@ -1,0 +1,6 @@
+/* 2カラムレイアウト (two-cols / two-cols-header) のカラム間に余白を追加 */
+.slidev-layout.two-cols,
+.slidev-layout.two-cols-header {
+  grid-template-columns: 1fr 1fr !important;
+  column-gap: 2.5rem !important;
+}
