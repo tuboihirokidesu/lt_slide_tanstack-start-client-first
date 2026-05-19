@@ -565,6 +565,8 @@ layout: two-cols-header
        ↓
 2025-09  Start v1 RC アナウンス
        ↓ feature-complete / API stable
+2026-04  Start も RSC を experimental サポート
+       ↓ isomorphic-first / Composite Components
 2026-05  まだ RC (1.0 日付は未公表)
 ```
 
