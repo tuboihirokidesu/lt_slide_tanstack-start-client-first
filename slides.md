@@ -765,6 +765,63 @@ export const Route = createFileRoute('/dashboard')({
 </v-click>
 
 ---
+layout: default
+---
+
+<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">Hybrid Mode</p>
+
+# <span class="text-4xl font-extrabold tracking-tight"><code class="font-mono text-cyan-600">'data-only'</code> の使いどころ</span>
+
+<p class="text-sm text-neutral-600 mt-2">
+  data だけ server で取り、UI 描画は client に任せる中間モード。<span class="font-bold">SEO を維持しつつサーバー負荷を減らす</span>実用バランスが取れる。
+</p>
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+
+<div class="bg-cyan-50 p-3 rounded-lg">
+  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600">ssr: true</div>
+  <div class="text-xs text-neutral-500 mt-1">フル SSR</div>
+  <ul class="text-xs text-neutral-700 mt-2 space-y-0.5">
+    <li>SEO: ◎</li>
+    <li>FCP: 良い</li>
+    <li>Server 負荷: 高 (data + render)</li>
+  </ul>
+</div>
+
+<div class="bg-amber-50 p-3 rounded-lg ring-2 ring-amber-400">
+  <div class="text-xs font-semibold tracking-widest uppercase text-amber-700">'data-only'</div>
+  <div class="text-xs text-neutral-500 mt-1">ハイブリッド</div>
+  <ul class="text-xs text-neutral-700 mt-2 space-y-0.5">
+    <li>SEO: ◎ (data 埋め込み)</li>
+    <li>FCP: <span class="font-bold">非常に良い</span></li>
+    <li>Server 負荷: <span class="font-bold">低 (data のみ)</span></li>
+  </ul>
+</div>
+
+<div class="bg-emerald-50 p-3 rounded-lg">
+  <div class="text-xs font-semibold tracking-widest uppercase text-emerald-600">ssr: false</div>
+  <div class="text-xs text-neutral-500 mt-1">フル CSR</div>
+  <ul class="text-xs text-neutral-700 mt-2 space-y-0.5">
+    <li>SEO: △</li>
+    <li>FCP: 遅め</li>
+    <li>Server 負荷: 最小</li>
+  </ul>
+</div>
+
+</div>
+
+<v-click>
+
+<div class="mt-4 p-3 bg-neutral-900 text-white rounded-lg">
+  <div class="text-xs font-semibold tracking-widest uppercase opacity-60">使い所</div>
+  <div class="text-sm font-medium mt-0.5">
+    複雑なコンポーネントツリーを持つ <span class="text-cyan-400">ダッシュボード / SaaS / 管理画面</span> に最適。React tree 全体を server で組み立てるコストを払わず、初期 data だけ先回りで渡せる。
+  </div>
+</div>
+
+</v-click>
+
+---
 layout: section
 class: 'bg-amber-500 text-neutral-900'
 ---
