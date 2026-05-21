@@ -555,7 +555,7 @@ layout: two-cols-header
 
 ::left::
 
-<div class="bg-gray-100 p-5 rounded-lg font-mono text-sm leading-relaxed mt-4">
+<div class="bg-gray-100 p-3 rounded-lg font-mono text-xs leading-relaxed mt-2">
 
 ```text
 2020  Next.js getServerSideProps
@@ -575,29 +575,38 @@ layout: two-cols-header
 
 </div>
 
-<p class="text-xs text-neutral-500 mt-2 leading-snug">
-  ※ <code>@tanstack/react-start</code> の <span class="font-semibold">package version は 1.x</span> だが、公式サイト上の <span class="font-semibold">product status はまだ RC</span>。混同に注意。
+<p class="text-[10px] text-neutral-500 mt-1.5 leading-snug">
+  ※ <code>@tanstack/react-start</code> の <span class="font-semibold">package version は 1.x</span> / 公式サイトの <span class="font-semibold">product status は RC</span> — 混同に注意
 </p>
 
 ::right::
 
-## <span class="text-xl font-bold">Tanner Linsley の主張</span>
+## <span class="text-lg font-bold">Tanner Linsley の主張</span>
 
 <v-clicks>
 
-<div class="bg-cyan-50 p-4 rounded-lg mt-3">
-  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600">命名批判</div>
-  <div class="text-sm mt-1">RSC は本当は "Pre-render Components"</div>
+<div class="bg-cyan-50 px-3 py-1.5 rounded-lg mt-1.5">
+  <div class="text-[10px] font-semibold tracking-widest uppercase text-cyan-600">命名批判</div>
+  <div class="text-sm font-bold text-neutral-800">"Server" ではなく <span class="text-cyan-700">"Pre-render" Components</span> と呼ぶべき</div>
+  <div class="text-xs text-neutral-600 leading-snug mt-0.5">
+    サーバー専用ではない — ビルド時 / Web Worker / Edge でも動く。<span class="font-medium">overreacted.io</span> はビルド時 RSC を CDN 静的配信
+  </div>
 </div>
 
-<div class="bg-cyan-50 p-4 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600">本質</div>
-  <div class="text-sm mt-1">RSC = <code>AsyncIterable&lt;string&gt;</code> という単純な primitive</div>
+<div class="bg-cyan-50 px-3 py-1.5 rounded-lg">
+  <div class="text-[10px] font-semibold tracking-widest uppercase text-cyan-600">本質</div>
+  <div class="text-sm font-bold text-neutral-800">RSC = <code class="text-xs">AsyncIterable&lt;string&gt;</code> のテキストストリーム</div>
+  <div class="text-xs text-neutral-600 leading-snug mt-0.5">
+    マジックなブラックボックスではなく<span class="font-semibold">データプリミティブ</span>。だから Query に流し込んで <code>staleTime</code> / 粒度の高い invalidation が効く
+  </div>
 </div>
 
-<div class="bg-cyan-50 p-4 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600">姿勢</div>
-  <div class="text-sm mt-1">"SPA の歴史を捨てるのではなく磨く"</div>
+<div class="bg-cyan-50 px-3 py-1.5 rounded-lg">
+  <div class="text-[10px] font-semibold tracking-widest uppercase text-cyan-600">姿勢</div>
+  <div class="text-sm font-bold text-neutral-800">SPA の 10 年を捨てるのではなく <span class="text-cyan-700">"磨く"</span></div>
+  <div class="text-xs text-neutral-600 leading-snug mt-0.5">
+    SSR + Hydration のメンタルモデルは依然強力。全部やり直すのは過剰、<span class="font-semibold">型安全性で進化</span>させて必要な時だけサーバーに委譲
+  </div>
 </div>
 
 </v-clicks>
