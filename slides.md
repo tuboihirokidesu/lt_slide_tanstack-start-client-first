@@ -274,128 +274,75 @@ README の自己定義を引用。Router は "type safety + data-driven navigati
 layout: default
 ---
 
-<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-3">Fact 03</p>
+<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">Fact 03</p>
 
-# <span class="text-4xl font-extrabold tracking-tight">packages/ の中で同居している</span>
+# <span class="text-4xl font-extrabold tracking-tight">Start は Router に "薄く" 乗っているだけ</span>
 
-<p class="text-neutral-600 mt-3"><code>TanStack/router/packages/</code> には Router と Start が並んで存在する（40+ packages）。</p>
+<p class="text-sm text-neutral-600 mt-2"><code>@tanstack/react-start</code> を import すると、内部では 4 層のラッパーが順に呼ばれる。<span class="font-bold">外部依存は <code>pathe</code> 1 つ</span>。</p>
 
-<div class="grid grid-cols-2 gap-4 mt-6 text-sm font-mono">
+<div class="grid grid-cols-1 gap-1.5 mt-4">
 
-<div class="bg-emerald-50 p-5 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-emerald-600 mb-3">Router 系</div>
-  <div class="space-y-1 text-neutral-700">
-    <div>router-core</div>
-    <div>react-router</div>
-    <div>solid-router</div>
-    <div>vue-router</div>
-    <div>router-cli / router-plugin</div>
-    <div>router-generator</div>
-    <div>router-vite-plugin</div>
-    <div>router-devtools-core / -devtools</div>
-    <div>router-utils</div>
-    <div class="text-neutral-400 mt-2 text-xs">… SSR/Query adapters も同居</div>
+<div class="bg-cyan-100 p-2.5 rounded-lg border-l-4 border-cyan-500">
+  <div class="flex items-baseline gap-3">
+    <code class="text-sm font-bold text-cyan-700 whitespace-nowrap">@tanstack/react-start</code>
+    <span class="text-xs text-neutral-600">薄いエントリ — <code>useServerFn</code> (35 行) + 再エクスポートだけ</span>
   </div>
 </div>
 
-<div class="bg-cyan-50 p-5 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-3">Start 系</div>
-  <div class="space-y-1 text-neutral-700">
-    <div>start-client-core</div>
-    <div>start-server-core</div>
-    <div>start-plugin-core</div>
-    <div>start-fn-stubs</div>
-    <div>start-storage-context</div>
-    <div>start-static-server-functions</div>
-    <div>react-start / -client / -server / -rsc</div>
-    <div>solid-start / -client / -server</div>
-    <div class="text-neutral-400 mt-2 text-xs">… vue-start も同居 (実験的)</div>
+<div class="text-center text-neutral-400 text-xs leading-none">↓ depends on</div>
+
+<div class="bg-amber-100 p-2.5 rounded-lg border-l-4 border-amber-500">
+  <div class="flex items-baseline gap-3">
+    <code class="text-sm font-bold text-amber-700 whitespace-nowrap">@tanstack/start-client-core</code>
+    <span class="text-xs text-neutral-600">server function 機構 — <code>createServerFn</code> / stream / RPC</span>
   </div>
-  <div class="text-xs text-neutral-500 font-sans mt-3">第一級は <span class="font-semibold text-cyan-600">React / Solid</span> の 2 系統</div>
+</div>
+
+<div class="text-center text-neutral-400 text-xs leading-none">↓ depends on</div>
+
+<div class="bg-emerald-100 p-2.5 rounded-lg border-l-4 border-emerald-500">
+  <div class="flex items-baseline gap-3">
+    <code class="text-sm font-bold text-emerald-700 whitespace-nowrap">@tanstack/react-router</code>
+    <span class="text-xs text-neutral-600">React bindings — <code>&lt;Link&gt;</code> / <code>useNavigate</code> / hooks</span>
+  </div>
+</div>
+
+<div class="text-center text-neutral-400 text-xs leading-none">↓ depends on</div>
+
+<div class="bg-neutral-200 p-2.5 rounded-lg border-l-4 border-neutral-500">
+  <div class="flex items-baseline gap-3">
+    <code class="text-sm font-bold text-neutral-700 whitespace-nowrap">@tanstack/router-core</code>
+    <span class="text-xs text-neutral-600">本体 (framework-agnostic) — ルートマッチ / 型推論 / loader</span>
+  </div>
 </div>
 
 </div>
 
 <v-click>
 
-<p class="mt-5 text-sm text-neutral-600">
-  Start は <span class="font-bold text-cyan-600">"Router のサブプロジェクト"</span> として、同じ monorepo で開発・リリースされている。
+<p class="mt-3 text-sm text-neutral-700">
+  → Start = <span class="font-bold text-cyan-600">"Router + RPC を Vite plugin で繋いだ薄い層"</span>。実体の大半は下 2 層 (router 系) にある。
 </p>
 
 </v-click>
 
 <!--
-3 つ目の事実。`TanStack/router` の `packages/` には Router 系と Start 系が同居 (40+ packages)。
-Start 系の第一級サポートは React と Solid。Vue は実験的。
-"Start は独立プロダクトではなく Router のサブプロジェクト" というのは open source 上の物理的事実。
+レイヤー構造を 4 段スタックで可視化。
+- @tanstack/react-start: 薄いエントリ。useServerFn (35 行) と再エクスポートしかない
+- @tanstack/start-client-core: server function / シリアライズ / RPC スタブ
+- @tanstack/react-router: React 向けの bindings (<Link>, useNavigate, hooks)
+- @tanstack/router-core: framework-agnostic な本体 (Solid / Vue にもこの core が使われる)
+
+外部依存は `pathe` 1 つだけ — それ以外は全部 workspace 内パッケージ (router monorepo 内で完結)。
+メッセージ：「Start は薄い RPC 層を被せただけで、本体は Router 側にある」。
+依存が極端にミニマルだからこそ Router の進化がそのまま Start に乗る。
 -->
 
 ---
 layout: default
 ---
 
-<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-3">Fact 04</p>
-
-# <span class="text-4xl font-extrabold tracking-tight">レイヤー構造</span>
-
-<p class="text-neutral-600 mt-3"><code>@tanstack/react-start</code> の依存はすべて workspace 内パッケージ。外部依存は <code>pathe</code> 1つだけ。</p>
-
-<div class="bg-gray-100 p-6 rounded-lg font-mono text-sm leading-relaxed mt-6">
-
-```text
-                  react-start  (薄い framework エントリ)
-                       ↓
-                start-client-core  (server function 機構)
-                       ↓
-                  router-core  (framework-agnostic)
-                       ↑
-                  react-router  (React bindings)
-```
-
-</div>
-
-<div class="grid grid-cols-3 gap-4 mt-6">
-
-<v-click>
-
-<div class="bg-cyan-50 p-4 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600">react-start</div>
-  <div class="text-sm mt-1 text-neutral-700">SSR / RSC / プラグイン入り口</div>
-</div>
-
-</v-click>
-
-<v-click>
-
-<div class="bg-amber-50 p-4 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-amber-600">start-client-core</div>
-  <div class="text-sm mt-1 text-neutral-700">server function スタブ / stream</div>
-</div>
-
-</v-click>
-
-<v-click>
-
-<div class="bg-emerald-50 p-4 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-emerald-600">router-core</div>
-  <div class="text-sm mt-1 text-neutral-700">本体 — ルートマッチ / ロード</div>
-</div>
-
-</v-click>
-
-</div>
-
-<!--
-4 つ目の事実。`@tanstack/react-start` のレイヤー構造。依存はすべて workspace 内パッケージで、外部依存は `pathe` 1 つだけ。
-react-start (薄いエントリ) → start-client-core (server function 機構) → router-core (framework-agnostic) という積み上げ。
-依存が極端にミニマルだからこそ、Router の進化がそのまま Start に乗る。API は Router 側で先に固まる傾向がある。
--->
-
----
-layout: default
----
-
-<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">Fact 05 · Routing</p>
+<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">Fact 04 · Routing</p>
 
 # <span class="text-4xl font-extrabold tracking-tight">File-Based Routing も Router 由来</span>
 
