@@ -58,6 +58,12 @@ author: tsuboi
   }
 </style>
 
+<!--
+オープニング。SSR / RSC が "正解" とされる空気の中で、あえて client-first を選ぶ理由を 15–20 分で。
+聴衆は Next.js App Router を触ったことがある人、`'use client'` の置き場所で悩んだことがある人を想定。
+持ち帰ってほしいのは「Start = Next.js 対抗ではなく、Router-first / Client-first というもう一つの軸」。
+-->
+
 ---
 layout: default
 ---
@@ -118,6 +124,11 @@ class: 'bg-cyan-500 text-white'
 <p class="text-xl font-medium mt-6 opacity-90 max-w-3xl">
   独立リポジトリではない。Router の上に乗った full-stack framework
 </p>
+
+<!--
+セクション 01。ここから 5 スライドで「Start は独立フレームワークではなく、Router の上に被さった薄い層」を事実で示す。
+最初に Identity (= 何者か) を確定させると、後の Client-first / 設計判断の話が腹落ちしやすい。
+-->
 
 ---
 layout: default
@@ -192,6 +203,13 @@ stars: 14.5k+  forks: 1.7k+
 
 </v-click>
 
+<!--
+1 つ目の事実。`github.com/TanStack/start` は実在しない (404)。Start の開発は `TanStack/router` リポジトリ内で進む。
+左：404 のキャプチャ / 右：`TanStack/router` の description にすでに "client-first" / "server-capable" / "full-stack framework" と書かれている。
+"Start の 90% は Router" は感覚値ではなく実測 — `react-router/src` (45 files, 187KB) vs `react-start/src` (12 files, 2.5KB) で 73 倍差。
+LT で 1 番のつかみ。「Start は薄い層」という主張の物量的裏付け。
+-->
+
 ---
 layout: default
 ---
@@ -246,6 +264,12 @@ layout: default
 
 </v-click>
 
+<!--
+README の自己定義を引用。Router は "type safety + data-driven navigation"、Start は "Router の上に乗せた full-stack 層"。
+キーフレーズは "All the power of TanStack Router, plus full-stack features" — Start は Router の全機能を継承した上で SSR / Server Functions / deployment を足したもの。
+=> Router を理解できれば Start の 9 割は理解できる、という構造的な軽さを強調。
+-->
+
 ---
 layout: default
 ---
@@ -299,6 +323,12 @@ layout: default
 </p>
 
 </v-click>
+
+<!--
+3 つ目の事実。`TanStack/router` の `packages/` には Router 系と Start 系が同居 (40+ packages)。
+Start 系の第一級サポートは React と Solid。Vue は実験的。
+"Start は独立プロダクトではなく Router のサブプロジェクト" というのは open source 上の物理的事実。
+-->
 
 ---
 layout: default
@@ -355,6 +385,12 @@ layout: default
 
 </div>
 
+<!--
+4 つ目の事実。`@tanstack/react-start` のレイヤー構造。依存はすべて workspace 内パッケージで、外部依存は `pathe` 1 つだけ。
+react-start (薄いエントリ) → start-client-core (server function 機構) → router-core (framework-agnostic) という積み上げ。
+依存が極端にミニマルだからこそ、Router の進化がそのまま Start に乗る。API は Router 側で先に固まる傾向がある。
+-->
+
 ---
 layout: default
 ---
@@ -407,6 +443,12 @@ src/routes/
 
 </v-click>
 
+<!--
+File-Based Routing も Router の機能。Start 固有ではない。
+`src/routes` から `routeTree.gen.ts` が自動生成され、これが型推論の中核。FULLY INFERRED の正体はこのファイル。
+Directory 形式と Flat 形式が混在可能。チームの好み / コロケーション戦略で選べる。
+-->
+
 ---
 layout: default
 ---
@@ -453,6 +495,13 @@ export * from '@tanstack/start-client-core'
 
 </v-click>
 
+<!--
+決定的証拠。`@tanstack/react-start` のメインエントリ `src/index.ts` はたった 2 行。
+1 行目：クライアントから server function を呼ぶラッパー `useServerFn` のエクスポート、これが 35 行。
+2 行目：`@tanstack/start-client-core` を丸ごと再エクスポート。
+"Start とは Router + server function 機構を Vite plugin で束ねたもの" を端的に証明。Section 01 のまとめスライド。
+-->
+
 ---
 layout: section
 class: 'bg-neutral-900 text-white'
@@ -468,6 +517,12 @@ class: 'bg-neutral-900 text-white'
 <p class="text-xl font-medium mt-6 opacity-80 max-w-3xl">
   公式が <code class="bg-white/10 px-2 py-0.5 rounded">CRITICAL</code> と書いた設計思想
 </p>
+
+<!--
+セクション 02。ここから「Client-first」が単なるマーケコピーではなく、公式が CRITICAL と明記している設計思想だと示す。
+流れ：SKILL.md の引用 → 歴史的背景 (RSC 全盛と Tanner の批判) → コードでの opt-out 方法 (`ssr: false` / SPA mode / data-only)。
+"Client-first を選べる仕組み" を順に展開していく。
+-->
 
 ---
 layout: default
@@ -509,6 +564,16 @@ layout: default
 </div>
 
 </v-click>
+
+<!--
+TanStack チーム自身が AI agent 向けに書いた `router-core/SKILL.md` からの直接引用。
+"TanStack Router is CLIENT-FIRST. Loaders run on the client by default, NOT server-only like Remix/Next.js." ⚠ CRITICAL タグ付き。
+注意したい階層：
+- Router 単体 = client-first がデフォルト
+- Start を被せると初期マッチは SSR がデフォルト (ハイブリッド方向)
+- client に寄せたければ `defaultSsr: false` / per-route `ssr: false` / SPA mode で opt-out できる
+"client-first を選べる" であって "強制" ではない、というニュアンスを丁寧に。
+-->
 
 ---
 layout: two-cols-header
@@ -567,6 +632,17 @@ layout: two-cols-header
 
 </v-clicks>
 
+<!--
+歴史的背景：2020 Next.js getServerSideProps → 2023 RSC でデフォルトが Server-first になった。
+タイムライン補足：2025-09 Start v1 RC、2026-04 Start も RSC を experimental サポート、2026-05 時点でまだ RC (1.0 日付は未公表)。
+混同注意：`@tanstack/react-start` の package version は 1.x だが、サイト上の product status は RC。
+
+右側は Tanner Linsley の RSC に対するスタンス：
+- 命名批判: RSC は本来 "Pre-render Components" / "Serializable Components" と呼ぶべき (ビルド時 / Web Worker / Edge でも動くため)
+- 本質: RSC は `AsyncIterable<string>` という単純な primitive。Dan Abramov の overreacted.io はビルド時 RSC で Cloudflare CDN 配信
+- 姿勢: SPA の 10 年の知見を "捨てて RSC でやり直す" のではなく "磨き上げる" 方向
+-->
+
 ---
 layout: default
 ---
@@ -621,6 +697,13 @@ export const Route = createFileRoute('/canvas')({
 
 </div>
 
+<!--
+`ssr: false` を書くと、loader もコンポーネントも完全にクライアント実行になる。
+`'use client'` と違いルート単位で明示的 (ファイル単位ではない) → 「どこから client か」が一目で分かる。
+loader 内で `localStorage` / `window` を直接触れる。canvas / 描画ツール / 完全 CSR な機能で有効。
+重要：SSR ルートと CSR ルートを同じデッキ内で混在可能。"全部 SSR か CSR か" の二択ではない。
+-->
+
 ---
 layout: two-cols-header
 ---
@@ -674,6 +757,13 @@ export default defineConfig({
 </div>
 
 </v-clicks>
+
+<!--
+デッキ全体を CSR 化する SPA Mode。`vite.config.ts` の plugin オプションで一行 (`spa: { enabled: true }`)。
+誤解されやすい点：SPA Mode = "サーバー機能を諦める" ではない。Server Functions / Server Routes はそのまま使える。
+初期 HTML はシェルのみ、レンダリングはクライアント。Cloudflare Pages / Netlify / S3 など静的ホスティングに乗せられる。
+社内ツール / 管理画面で「サーバーは欲しいが SSR まではいらない」ケースに最適。Tanner が言う "段階的導入の困難さ" の解 のひとつ。
+-->
 
 ---
 layout: default
@@ -734,6 +824,15 @@ export const Route = createFileRoute('/dashboard')({
 
 </v-click>
 
+<!--
+ルートごとに `ssr` オプションで実行場所を選択：
+- `true` (デフォルト): loader と render 両方サーバー
+- `'data-only'`: loader はサーバー、UI 描画はクライアント (次スライドで詳説)
+- `false`: 完全クライアント
+全体方針は `defaultSsr: false` でひっくり返せる → "必要なルートだけ SSR" という設計が自然にできる。
+Next.js App Router の「デフォルト Server Component / `'use client'` で opt-out」とは方向が逆である点を強調。
+-->
+
 ---
 layout: default
 ---
@@ -791,6 +890,13 @@ layout: default
 
 </v-click>
 
+<!--
+`ssr: 'data-only'` の使いどころ。データは server で取得して HTML に埋め込み、UI 描画は client に任せる。
+利点：SEO は維持 (データが HTML に乗る) / FCP が非常に良い / Server 負荷は最小 (React tree を組み立てない)。
+React tree が複雑なダッシュボード / SaaS / 管理画面で、サーバー側 render コストを抑えたいケースにハマる。
+"フル SSR か CSR か" の二択ではなく、データだけ先回りという第 3 の選択肢があると説明する。
+-->
+
 ---
 layout: section
 class: 'bg-amber-500 text-neutral-900'
@@ -806,6 +912,12 @@ class: 'bg-amber-500 text-neutral-900'
 <p class="text-xl font-medium mt-6 opacity-80 max-w-3xl">
   ドーナツホール問題 / createServerFn / 型貫通
 </p>
+
+<!--
+セクション 03。Client-first を選ぶことで何が "堅く" なるのか、8 スライドで示す。
+中心トピック：(1) ドーナツホール問題の回避、(2) createServerFn という明示的 RPC、(3) 型の貫通、(4) URL as state、(5) パフォーマンス、(6) セキュリティ表面。
+ここから LT のクライマックス。Zenn の論点 (RSC 批判 / `'use client'` の隠れたコスト / URL ステート管理) を集中投入。
+-->
 
 ---
 layout: two-cols-header
@@ -866,6 +978,19 @@ Server Component (page.tsx)
 
 </v-click>
 
+<!--
+RSC 採用フレームワークが抱える「ドーナツホール問題」。Tanner Linsley が PodRocket インタビューで挙げた "最大の課題"。
+構造：Server Component の中に Client Component、その中にまた Server Component が children/slot として埋め込まれる。
+開発者は「いま書いているこの行はサーバーか、クライアントか」を常に意識し続ける必要がある → 認知負荷が累積。
+
+3 つの具体的負担：
+- `'use client'` / `'use server'` の境界を常に意識
+- インタラクティブ UI ではデータコロケーションが失われ、親に "巻き上げ" が必要 (Promise.all で props バケツリレー)
+- SPA からの段階的導入が困難 — App Router は実質オールイン
+
+Start はこの "穴" 自体を作らない設計 (= 次スライドの createServerFn パターン) を選ぶ。
+-->
+
 ---
 layout: default
 ---
@@ -921,6 +1046,16 @@ const { data } = useQuery({
 </v-click>
 
 </div>
+
+<!--
+Start の解答。サーバー処理は `createServerFn` で "ただの async 関数" として書き、クライアントは `useQuery` で server 状態として扱う。
+境界は文字列ディレクティブ (`'use server'`) ではなく `import` 文 — 出所が明確で、TypeScript / IDE / スタックトレースすべてが追える。
+Tanner の哲学："RSC は サーバー状態にすぎない" → だったら TanStack Query で扱えばいい。
+- stale-while-revalidate / cache / 粒度の高い invalidation がそのまま効く
+- 各 RSC に個別の staleTime / cacheTime、queryKey 単位の選択的 invalidation
+- ページ全体の再レンダリングを避けて、必要な部分だけ revalidate できる
+ポイント：「マジックなしで、明示的 import で boundary を引く」。
+-->
 
 ---
 layout: default
@@ -990,6 +1125,17 @@ const streamChat = createServerFn({ method: 'POST' })
 
 </div>
 
+<!--
+Server Function は `async function*` (async generator) を返せる → 型付きストリーミングが成立。
+公式 docs も「AI アプリの台頭で特に人気」と明記しているパターン。LLM の trickle UI / chat / 検索の段階表示と相性 ◎。
+4 つの利点：
+- yield の型が end-to-end で貫通
+- API キーはサーバーに閉じ込め
+- tool 呼び出しもサーバー側で安全
+- SSE / WebSocket の手配線は不要、`for await` で消費するだけ
+RSC や Server Actions を経由せず、TanStack Query + Server Function だけでストリーミング UI が組める。
+-->
+
 ---
 layout: default
 ---
@@ -1045,6 +1191,13 @@ export const Route = createFileRoute('/posts/$id')({
 
 </div>
 
+<!--
+REST API も同じ `routes/` ディレクトリで定義できる。Next.js Route Handlers と立て方は同じだが、page route と "同居" できるのが差分。
+1 つの `routes/posts.$id.ts` に component (UI) / loader / server.handlers (GET/POST/DELETE) を全部書ける → コロケーションが効く。
+Web 標準 (`Request` / `Response`) のみで、Node 固有 API に依存しない → Edge / Workers / Bun / Deno にそのまま乗る。
+使い分け：UI 起点なら loader / 関数呼び出しなら serverFn / 外部からの HTTP なら handlers。
+-->
+
 ---
 layout: default
 ---
@@ -1097,6 +1250,13 @@ export const Route = createFileRoute('/posts/$postId')({
 </p>
 
 </v-click>
+
+<!--
+型がクライアントから貫通する。ルート定義の `params` / `validateSearch` / `loader` の戻り値が、`<Link>` / `useNavigate` / `useSearch` まで完全に推論される。
+`search={{ tab: 'invalid' }}` のように許可されない値を書くとコンパイルエラー。
+SKILL.md 引用：「TanStack Router types are FULLY INFERRED. Never cast.」型キャスト禁止の文化。
+Client-first だから可能 — ルートツリーが静的解析でき、クライアント側 TypeScript で全推論される。サーバー側コンパイルに依存する RSC とは技術的に別の土俵。
+-->
 
 ---
 layout: default
@@ -1164,6 +1324,18 @@ export const Route = createFileRoute('/posts')({
 
 </div>
 
+<!--
+URL クエリパラメータが "本物の状態管理" になる、というスライド。Zenn 記事 "TanStack Routerで実現する高度なクエリパラメータ管理" の核心。
+Tanner の主張："URL は最古のステート管理 — 高速・共有可能・直感的" / "バリデーション・型・所有権をルーターに持たせれば URL は文字列ではなく真の状態になる"。
+
+コードで示す 4 つの武器：
+- validateSearch + Zod で型 + ランタイム検証。`.catch()` で不正値からも復旧
+- stripSearchParams でデフォ値を URL から削除 → URL がクリーンに保たれる (`?page=1` のような無駄を消す)
+- retainSearchParams で theme / lang など横断パラメータをルート遷移しても保持
+- useSearch({ select, structuralSharing }) で必要なパラメータだけ subscribe → 不要な再レンダリングを抑制
+JSON-first なので入れ子オブジェクトや配列も自然に扱える。検索 / フィルタ画面で威力。
+-->
+
 ---
 layout: default
 ---
@@ -1219,6 +1391,15 @@ layout: default
 
 </v-click>
 
+<!--
+「Client-first は SSR を諦めた設計ではない」という反論スライド。
+Platformatic の corrected benchmark で TanStack Start は 1,000 req/s を 100% 成功、平均 18ms。
+React Router (19ms) と同等、Next.js は同条件で苦戦。
+ビルド側：Vite 8 が Rolldown を標準採用、Rolldown 1.0 stable は 2026-05-07 リリース。公式説明で 10–30x faster builds。
+Start は Vite plugin なので toolchain の進化に直接乗れる → Tanner Linsley の Server Functions (GET) なら HTTP キャッシュも効くという PodRocket の主張も合わせて補足できる。
+「クライアントファースト = 妥協」という誤解を数字で消すスライド。
+-->
+
 ---
 layout: default
 ---
@@ -1268,6 +1449,17 @@ layout: default
 </div>
 
 </v-click>
+
+<!--
+2025 年末以降、RSC / Next.js 周辺の脆弱性が立て続けに出ている事実をまとめる。
+- 2025-12 React2Shell (CVE-2025-55182, CVSS 10.0): RSC payload の unsafe deserialization による unauthenticated RCE。Next.js advisory GHSA-9qr9-h5gf-34mp
+- 2025-12 follow-up: DoS / source code exposure。15.5.16 / 16.2.5 で修正
+- 2026-05 coordinated release: Server/Cache Components DoS、RSC cache poisoning、Middleware/Proxy bypass
+
+論点：RSC は強力。ただし Flight protocol / cache / server-client 境界が複雑 → attack surface が広い。
+Tanner の主張：Flight プロトコルは "双方向" であることが攻撃面を広げている。Start は単方向 (サーバー → クライアントのみ) + 入力検証必須の RPC という設計を取る。
+"FUD ではなく事実" として淡々と扱う。RSC を否定するのではなく "コストがあることを認識して選ぶ" のが LT の趣旨。
+-->
 
 ---
 layout: two-cols-header
@@ -1340,6 +1532,25 @@ layout: two-cols-header
   ※ <code>createServerFn</code> も HTTP 越しの API surface。認証 / 入力検証 / 依存更新は引き続き必要。
 </p>
 
+<!--
+誤解防止スライド。「`'use server'` が悪い」という話ではない。
+React2Shell の根本原因は RSC / Flight protocol の unsafe deserialization。`'use server'` Server Actions は、その問題が外部入力と結びつく "代表的な入口" になった。
+
+左：代表的入口になった構造的理由
+- 暗黙の network boundary (文字列を書くだけで境界が生まれる)
+- 引数が client から serialize されて届く (untrusted input)
+- decoder の safety を framework に預ける
+
+右：Start の選択
+- `'use server'` actions は意図的に非対応
+- 境界はコードで明示 (`createServerFn`)
+- 入力は untrusted として `.inputValidator()` 必須
+- RSC は opt-in
+
+注釈：`createServerFn` も HTTP 越しの API surface であることに変わりはない。"安全になる" のではなく "boundary が見える" のが利点。
+Zenn 記事 "use client は JavaScript 標準ではない" の論点 (出所不明な文字列、ロックイン、エコシステム断片化) もここで触れられる。
+-->
+
 ---
 layout: default
 ---
@@ -1398,6 +1609,18 @@ layout: default
 
 </v-click>
 
+<!--
+ここまでで主要論点は出し切ったので、最後に "Start ならではの細部" を 6 枚カードでサラッと紹介。
+- Platform: Vite plugin、Node / Bun / Deno / Workers / Lambda に乗る、Vercel 結合なし
+- Web Standards: Request / Response が一次市民、Edge / Workers 自然
+- Speed: `defaultPreload: 'intent'` でホバー時 prefetch、デフォで体感速い
+- Middleware: `createMiddleware` + `beforeLoad` で型付き context 伝播、`throw redirect()` で認可ガード
+- UX: `pendingMs` / `pendingMinMs` でローディング点滅防止、`errorComponent` も per-route
+- Qwik-flavored: `<Hydrate when={...}>` で条件付き hydration、JS チャンクの DL すら遅延
+共通点："React で欲しかったが欠けていた細部" をフレームワーク側で API 化している。
+時間が押していたらこのスライドはざっと舐めるだけで OK。
+-->
+
 ---
 layout: section
 class: 'bg-purple-500 text-white'
@@ -1412,6 +1635,12 @@ class: 'bg-purple-500 text-white'
 <p class="text-xl font-medium mt-6 opacity-90 max-w-3xl">
   Next.js / React Router (Remix) との使い分け
 </p>
+
+<!--
+セクション 04。最終章。Start vs Next.js / Remix の使い分け。
+「Start が万能」とは言わない。プロジェクトの性質で最適なツールは変わる、というフェアな姿勢で締める。
+Tanner 本人も「RSC は静的コンテンツに有効、万能ではない」と発言している。
+-->
 
 ---
 layout: two-cols-header
@@ -1450,6 +1679,12 @@ layout: two-cols-header
     <li class="flex gap-2"><span class="font-bold">·</span> 採用市場の安心感</li>
   </ul>
 </div>
+
+<!--
+左 (Start が刺さる)：ダッシュボード / 管理画面 / SaaS 認証後 / 社内ツール / 既存 SPA を壊さず移行したい / Type-safe routing 最優先。
+右 (Next.js / Remix が刺さる)：マーケサイト / メディア / e-commerce (ISR / streaming) / 大量のサーバー側データ集約 / Vercel + RSC エコシステム / 採用市場の安心感。
+ポイント：ツール選択はアプリケーションの特性次第。"Start ファン" として登壇しているが、宗教戦争にしない。
+-->
 
 ---
 layout: default
@@ -1499,3 +1734,20 @@ layout: default
 </div>
 
 </v-click>
+
+<!--
+4 つの take away を再確認：
+01 Start ≒ Router の薄い層 (src 比較で 1.4%、独立リポジトリは存在しない)
+02 Client-first は公式設計 (SKILL.md に CRITICAL と明記)
+03 ドーナツホールを作らない (境界はインポートだけ、認知負荷が低い)
+04 型が貫通する (routing → loader → params → search、FULLY INFERRED)
+
+最後のメッセージ：「RSC が全てではない。クライアントファーストを "選べる" 時代に」。
+RSC を否定するのではなく、もう一つの選択肢を提示する LT として締める。
+質疑応答用にチャットに流すリンク：
+- TanStack Router (https://tanstack.com/router)
+- TanStack Start (https://tanstack.com/start)
+- Zenn 記事 3 本 (use client / TanStack Start RSC / Search params 管理)
+ご清聴ありがとうございました。
+-->
+
