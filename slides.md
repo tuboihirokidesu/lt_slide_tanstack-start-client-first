@@ -844,27 +844,24 @@ layout: two-cols-header
 
 ::left::
 
-```tsx {all|2-8|10-14|all}{lines:true}
-// app/dashboard/page.tsx ─ Server Component
-async function Dashboard() {
-  const data = await db.query()      // ← server
+```tsx {all|2-6|8-12|14-16|all}{lines:true}
+// page.tsx ── Server (合成するだけ)
+async function Page() {
   return (
-    <ClientChart>                    {/* ← 'use client' */}
-      <ServerInfo id={data.id} />    {/* ← 再び server (穴の中) */}
-    </ClientChart>
+    <Modal><UserCard /></Modal>  /* server → client → server */
   )
 }
-// ClientChart.tsx
+// Modal.tsx ── 'use client' (state を持つ必要がある)
 'use client'
-function ClientChart({ children }) {
-  const [open, setOpen] = useState() // ← client (hook OK)
-  return <button onClick={() => setOpen(!open)}>{children}</button>
+function Modal({ children }) {
+  const [open] = useState(false)
+  return open && <div>{children}</div>
+}
+// UserCard.tsx ── server (DB / secret に触れる必要がある)
+async function UserCard() {
+  return <div>{(await db.user.current()).name}</div>
 }
 ```
-
-<p class="text-xs text-neutral-500 mt-2 leading-snug">
-  親 = server / 子 = client / 孫 = server。<span class="font-bold">どこで実行されているか</span>を毎行考えながら書く。
-</p>
 
 ::right::
 
