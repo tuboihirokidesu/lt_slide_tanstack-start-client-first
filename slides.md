@@ -123,28 +123,28 @@ class: 'bg-cyan-500 text-white'
 layout: default
 ---
 
-<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-3">Fact 01</p>
+<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">Fact 01</p>
 
 # <span class="text-4xl font-extrabold tracking-tight"><code class="text-cyan-600 font-mono">TanStack/start</code> は存在しない</span>
 
-<p class="text-neutral-600 mt-3">独立リポジトリを叩くと <code>404 Not Found</code> が返る。Start の開発は <code>TanStack/router</code> 内で進められている。</p>
+<p class="text-sm text-neutral-600 mt-2">独立リポジトリを叩くと <code>404 Not Found</code> が返る。Start の開発は <code>TanStack/router</code> 内で進められている。</p>
 
-<div class="grid grid-cols-2 gap-6 mt-8">
+<div class="grid grid-cols-2 gap-4 mt-3">
 
-<div class="bg-neutral-900 text-white p-6 rounded-lg font-mono text-sm">
-<div class="text-xs font-semibold tracking-widest uppercase text-red-400 mb-2">github.com/TanStack/start</div>
+<div class="bg-neutral-900 text-white p-4 rounded-lg font-mono text-xs">
+<div class="text-xs font-semibold tracking-widest uppercase text-red-400 mb-1">github.com/TanStack/start</div>
 
 ```text
 404
 Page not found
 ```
 
-<div class="text-xs text-neutral-400 font-sans mt-3">→ Start という独立リポジトリは存在しない</div>
+<div class="text-xs text-neutral-400 font-sans mt-2">→ Start という独立リポジトリは存在しない</div>
 
 </div>
 
-<div class="bg-cyan-50 p-6 rounded-lg font-mono text-sm">
-<div class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">github.com/TanStack/router</div>
+<div class="bg-cyan-50 p-4 rounded-lg font-mono text-xs">
+<div class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-1">github.com/TanStack/router</div>
 
 ```text
 description: "🤖 A client-first,
@@ -155,7 +155,7 @@ description: "🤖 A client-first,
 stars: 14.5k+  forks: 1.7k+
 ```
 
-<div class="text-xs text-neutral-500 font-sans mt-3">→ 自己紹介に "client-first" / Start は <span class="font-semibold">React と Solid を第一級サポート</span></div>
+<div class="text-xs text-neutral-500 font-sans mt-2">→ 自己紹介に "client-first" / Start は <span class="font-semibold">React と Solid を第一級サポート</span></div>
 
 </div>
 
@@ -163,8 +163,31 @@ stars: 14.5k+  forks: 1.7k+
 
 <v-click>
 
-<p class="mt-6 text-lg font-bold text-neutral-900">
+<p class="mt-3 text-base font-bold text-neutral-900">
   公式の自己定義からして <span class="text-cyan-600">"client-first"</span> が含まれている。
+</p>
+
+</v-click>
+
+<v-click>
+
+<div class="grid grid-cols-3 gap-3 mt-3 text-center">
+  <div class="bg-emerald-50 p-2 rounded-lg">
+    <div class="text-xs font-semibold tracking-widest uppercase text-emerald-600">react-router/src</div>
+    <div class="text-xl font-black text-emerald-500 mt-0.5">45 <span class="text-xs font-bold">files</span> · 187<span class="text-xs">KB</span></div>
+  </div>
+  <div class="bg-cyan-50 p-2 rounded-lg">
+    <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600">react-start/src</div>
+    <div class="text-xl font-black text-cyan-500 mt-0.5">12 <span class="text-xs font-bold">files</span> · 2.5<span class="text-xs">KB</span></div>
+  </div>
+  <div class="bg-neutral-900 text-white p-2 rounded-lg">
+    <div class="text-xs font-semibold tracking-widest uppercase opacity-60">逆算</div>
+    <div class="text-xl font-black text-amber-400 mt-0.5">Router ≒ Start の <span class="text-cyan-400">73 倍</span></div>
+  </div>
+</div>
+
+<p class="mt-2 text-sm text-neutral-700">
+  → src 実測でも Start は Router の <span class="font-bold text-cyan-600">1.4%</span>。<span class="font-bold">"Start の 90% は Router"</span> は誇張ではなく実測。
 </p>
 
 </v-click>
@@ -175,7 +198,7 @@ layout: default
 
 <p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">Fact 02</p>
 
-# <span class="text-4xl font-extrabold tracking-tight">README が明言している</span>
+# <span class="text-4xl font-extrabold tracking-tight">TanStack の "売り"</span>
 
 <div class="grid grid-cols-2 gap-4 mt-5">
 
@@ -381,61 +404,6 @@ src/routes/
   <span class="text-xs font-semibold tracking-widest uppercase opacity-60">Key</span>
   <div class="text-sm font-medium mt-0.5">どちらも同じ route tree に変換される。<span class="text-cyan-400">混在も可</span>。生成された <code class="text-amber-400">routeTree.gen.ts</code> が型推論を高速・FULLY INFERRED に保つ。</div>
 </div>
-
-</v-click>
-
----
-layout: default
-class: 'bg-gray-100'
----
-
-<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-3">Numbers</p>
-
-# <span class="text-4xl font-extrabold tracking-tight">"90% は Router" を実測する</span>
-
-<p class="text-lg text-neutral-600 mt-3 max-w-3xl">
-  リポジトリ内の <code>react-router/src</code> と <code>react-start/src</code> を実測比較。
-</p>
-
-<div class="grid grid-cols-4 gap-8 mt-12 border-t-2 border-neutral-300 pt-8">
-  <div>
-    <div class="text-5xl font-black tracking-tight text-emerald-500">45</div>
-    <div class="text-xs font-semibold tracking-widest uppercase text-neutral-500 mt-2">react-router files</div>
-  </div>
-  <div>
-    <div class="text-5xl font-black tracking-tight text-emerald-500">187<span class="text-2xl">KB</span></div>
-    <div class="text-xs font-semibold tracking-widest uppercase text-neutral-500 mt-2">router src bytes</div>
-  </div>
-  <div>
-    <div class="text-5xl font-black tracking-tight text-cyan-500">12</div>
-    <div class="text-xs font-semibold tracking-widest uppercase text-neutral-500 mt-2">react-start files</div>
-  </div>
-  <div>
-    <div class="text-5xl font-black tracking-tight text-cyan-500">2.5<span class="text-2xl">KB</span></div>
-    <div class="text-xs font-semibold tracking-widest uppercase text-neutral-500 mt-2">start src bytes</div>
-  </div>
-</div>
-
-<v-click>
-
-<div class="mt-8 p-5 bg-neutral-900 text-white rounded-lg flex items-center justify-between">
-  <div>
-    <div class="text-xs font-semibold tracking-widest uppercase opacity-60">react-start src ÷ react-router src</div>
-    <div class="text-3xl font-black tracking-tight mt-1">≒ <span class="text-cyan-400">1.4%</span></div>
-  </div>
-  <div class="text-right">
-    <div class="text-xs font-semibold tracking-widest uppercase opacity-60">逆算</div>
-    <div class="text-3xl font-black tracking-tight mt-1">Router は Start の <span class="text-amber-400">約 73 倍</span></div>
-  </div>
-</div>
-
-</v-click>
-
-<v-click>
-
-<p class="mt-4 text-sm text-neutral-600">
-  ※ src ディレクトリの比較。<code>start-client-core</code> 等を含めても Router が圧倒的に重い。
-</p>
 
 </v-click>
 
@@ -1371,6 +1339,64 @@ layout: two-cols-header
 <p class="mt-3 text-xs text-neutral-500 leading-snug">
   ※ <code>createServerFn</code> も HTTP 越しの API surface。認証 / 入力検証 / 依存更新は引き続き必要。
 </p>
+
+---
+layout: default
+---
+
+<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">More</p>
+
+# <span class="text-4xl font-extrabold tracking-tight">他にもある "Start ならでは"</span>
+
+<p class="text-sm text-neutral-600 mt-2">Next.js / Remix と差がつく細部の API たち。</p>
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+
+<div class="bg-cyan-50 p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]">
+  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-1">Platform</div>
+  <div class="text-base font-bold text-neutral-900">デプロイ先非依存</div>
+  <div class="text-xs text-neutral-600 mt-1 leading-snug">Vite plugin として動く。Node / Bun / Deno / Workers / Lambda にそのまま乗る。<span class="font-semibold">Vercel 結合なし</span>。</div>
+</div>
+
+<div class="bg-emerald-50 p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]">
+  <div class="text-xs font-semibold tracking-widest uppercase text-emerald-600 mb-1">Web Standards</div>
+  <div class="text-base font-bold text-neutral-900"><code>Request</code> / <code>Response</code> 一次市民</div>
+  <div class="text-xs text-neutral-600 mt-1 leading-snug">Node の <code>req</code>/<code>res</code> ではなく Web Fetch primitives。Edge / Workers に自然に乗る。</div>
+</div>
+
+<div class="bg-amber-50 p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]">
+  <div class="text-xs font-semibold tracking-widest uppercase text-amber-600 mb-1">Speed</div>
+  <div class="text-base font-bold text-neutral-900">Intent Preloading</div>
+  <div class="text-xs text-neutral-600 mt-1 leading-snug"><code>defaultPreload: 'intent'</code> でホバー時に次ルートの loader を先回り。デフォで体感が速い。</div>
+</div>
+
+<div class="bg-purple-50 p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]">
+  <div class="text-xs font-semibold tracking-widest uppercase text-purple-600 mb-1">Middleware</div>
+  <div class="text-base font-bold text-neutral-900">型付き middleware chain</div>
+  <div class="text-xs text-neutral-600 mt-1 leading-snug"><code>createMiddleware</code> + <code>beforeLoad</code> で context を型安全に伝播。<code>throw redirect()</code> で認可ガード。</div>
+</div>
+
+<div class="bg-rose-50 p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]">
+  <div class="text-xs font-semibold tracking-widest uppercase text-rose-600 mb-1">UX details</div>
+  <div class="text-base font-bold text-neutral-900">Pending / Error をルート単位で</div>
+  <div class="text-xs text-neutral-600 mt-1 leading-snug"><code>pendingMs</code> / <code>pendingMinMs</code> でローディング点滅まで防止。<code>errorComponent</code> も per-route。</div>
+</div>
+
+<div class="bg-neutral-900 text-white p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]">
+  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-400 mb-1">Qwik-flavored</div>
+  <div class="text-base font-bold text-white">Deferred Hydration</div>
+  <div class="text-xs text-neutral-300 mt-1 leading-snug"><code>&lt;Hydrate when={visible()}&gt;</code> — 条件が来るまで JS チャンクすら DL しない。</div>
+</div>
+
+</div>
+
+<v-click>
+
+<p class="mt-3 text-sm text-neutral-700">
+  → どれも <span class="font-bold">「React で欲しかったが欠けていた細部」</span> をフレームワーク側で API 化したもの。
+</p>
+
+</v-click>
 
 ---
 layout: section
