@@ -276,65 +276,81 @@ layout: default
 
 <p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">Fact 03</p>
 
-# <span class="text-4xl font-extrabold tracking-tight">Start は Router に "薄く" 乗っているだけ</span>
+# <span class="text-4xl font-extrabold tracking-tight">2 系統の薄いスタックを Vite plugin で繋ぐ</span>
 
-<p class="text-sm text-neutral-600 mt-2"><code>@tanstack/react-start</code> を import すると、内部では 4 層のラッパーが順に呼ばれる。<span class="font-bold">外部依存は <code>pathe</code> 1 つ</span>。</p>
+<p class="text-sm text-neutral-600 mt-2">ユーザーは <span class="font-bold">Start 系</span> と <span class="font-bold">Router 系</span> の 2 つを install する。Vite plugin が両者を繋いで 1 つのフルスタック framework になる。外部依存は <code>pathe</code> 1 つだけ。</p>
 
-<div class="grid grid-cols-1 gap-1.5 mt-4">
+<div class="grid grid-cols-2 gap-4 mt-4">
 
-<div class="bg-cyan-100 p-2.5 rounded-lg border-l-4 border-cyan-500">
-  <div class="flex items-baseline gap-3">
-    <code class="text-sm font-bold text-cyan-700 whitespace-nowrap">@tanstack/react-start</code>
-    <span class="text-xs text-neutral-600">薄いエントリ — <code>useServerFn</code> (35 行) + 再エクスポートだけ</span>
+<div class="space-y-1.5">
+  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600 text-center">Start 系 (server functions)</div>
+
+  <div class="bg-cyan-100 p-2.5 rounded-lg border-l-4 border-cyan-500">
+    <code class="text-sm font-bold text-cyan-700">@tanstack/react-start</code>
+    <div class="text-xs text-neutral-600 mt-0.5">薄いエントリ — <code>useServerFn</code> + 再エクスポート</div>
+  </div>
+
+  <div class="text-center text-neutral-400 text-xs leading-none">↓</div>
+
+  <div class="bg-amber-100 p-2.5 rounded-lg border-l-4 border-amber-500">
+    <code class="text-sm font-bold text-amber-700">@tanstack/start-client-core</code>
+    <div class="text-xs text-neutral-600 mt-0.5">RPC 機構 — <code>createServerFn</code> / stream</div>
   </div>
 </div>
 
-<div class="text-center text-neutral-400 text-xs leading-none">↓ depends on</div>
+<div class="space-y-1.5">
+  <div class="text-xs font-semibold tracking-widest uppercase text-emerald-600 text-center">Router 系 (routing)</div>
 
-<div class="bg-amber-100 p-2.5 rounded-lg border-l-4 border-amber-500">
-  <div class="flex items-baseline gap-3">
-    <code class="text-sm font-bold text-amber-700 whitespace-nowrap">@tanstack/start-client-core</code>
-    <span class="text-xs text-neutral-600">server function 機構 — <code>createServerFn</code> / stream / RPC</span>
+  <div class="bg-emerald-100 p-2.5 rounded-lg border-l-4 border-emerald-500">
+    <code class="text-sm font-bold text-emerald-700">@tanstack/react-router</code>
+    <div class="text-xs text-neutral-600 mt-0.5">React bindings — <code>&lt;Link&gt;</code> / hooks</div>
+  </div>
+
+  <div class="text-center text-neutral-400 text-xs leading-none">↓</div>
+
+  <div class="bg-neutral-200 p-2.5 rounded-lg border-l-4 border-neutral-500">
+    <code class="text-sm font-bold text-neutral-700">@tanstack/router-core</code>
+    <div class="text-xs text-neutral-600 mt-0.5">本体 — ルートマッチ / 型推論 / loader</div>
   </div>
 </div>
 
-<div class="text-center text-neutral-400 text-xs leading-none">↓ depends on</div>
-
-<div class="bg-emerald-100 p-2.5 rounded-lg border-l-4 border-emerald-500">
-  <div class="flex items-baseline gap-3">
-    <code class="text-sm font-bold text-emerald-700 whitespace-nowrap">@tanstack/react-router</code>
-    <span class="text-xs text-neutral-600">React bindings — <code>&lt;Link&gt;</code> / <code>useNavigate</code> / hooks</span>
-  </div>
 </div>
 
-<div class="text-center text-neutral-400 text-xs leading-none">↓ depends on</div>
+<div class="text-center text-neutral-400 text-xs mt-2 leading-none">↘ &nbsp; ↙</div>
 
-<div class="bg-neutral-200 p-2.5 rounded-lg border-l-4 border-neutral-500">
-  <div class="flex items-baseline gap-3">
-    <code class="text-sm font-bold text-neutral-700 whitespace-nowrap">@tanstack/router-core</code>
-    <span class="text-xs text-neutral-600">本体 (framework-agnostic) — ルートマッチ / 型推論 / loader</span>
-  </div>
-</div>
-
+<div class="bg-neutral-900 text-white p-2.5 rounded-lg mt-1">
+  <code class="text-sm font-bold text-cyan-400">@tanstack/start-plugin-core</code>
+  <span class="text-xs opacity-80 ml-2">Vite plugin で双方を統合 (route 生成 / SSR / server function 配線)</span>
 </div>
 
 <v-click>
 
-<p class="mt-3 text-sm text-neutral-700">
-  → Start = <span class="font-bold text-cyan-600">"Router + RPC を Vite plugin で繋いだ薄い層"</span>。実体の大半は下 2 層 (router 系) にある。
+<p class="mt-2 text-sm text-neutral-700">
+  → <code>@tanstack/react-start</code> 単体で全部入るわけではない。<span class="font-bold text-cyan-600">2 系統 × plugin</span> でフルスタックを構成。
 </p>
 
 </v-click>
 
 <!--
-レイヤー構造を 4 段スタックで可視化。
-- @tanstack/react-start: 薄いエントリ。useServerFn (35 行) と再エクスポートしかない
-- @tanstack/start-client-core: server function / シリアライズ / RPC スタブ
-- @tanstack/react-router: React 向けの bindings (<Link>, useNavigate, hooks)
-- @tanstack/router-core: framework-agnostic な本体 (Solid / Vue にもこの core が使われる)
+レイヤー構造を 2 本柱 + plugin 統合で正確に可視化。
 
-外部依存は `pathe` 1 つだけ — それ以外は全部 workspace 内パッケージ (router monorepo 内で完結)。
-メッセージ：「Start は薄い RPC 層を被せただけで、本体は Router 側にある」。
+【Start 系】
+- @tanstack/react-start: 薄いエントリ (useServerFn + 再エクスポート)
+- @tanstack/start-client-core: RPC 機構 (createServerFn / stream)
+
+【Router 系】 (Start 系とは独立した npm package)
+- @tanstack/react-router: React 用 bindings (<Link>, hooks)
+- @tanstack/router-core: framework-agnostic な本体 (ルートマッチ / 型推論 / loader)
+
+【統合層】
+- @tanstack/start-plugin-core: Vite plugin で route 生成 / SSR / server function を配線
+
+ユーザー視点：
+- install するのは @tanstack/react-start + @tanstack/react-router の 2 系統
+- @tanstack/react-start を import しても、react-router / router-core は transitive に同梱されない
+- 1 つの "framework" に見えるのは Vite plugin が繋いでいるから
+
+外部依存は `pathe` 1 つだけ — それ以外は全部 workspace 内 (router monorepo 内で完結)。
 依存が極端にミニマルだからこそ Router の進化がそのまま Start に乗る。
 -->
 
