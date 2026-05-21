@@ -605,7 +605,7 @@ layout: two-cols-header
   <div class="text-[10px] font-semibold tracking-widest uppercase text-cyan-600">姿勢</div>
   <div class="text-sm font-bold text-neutral-800">SPA の 10 年を捨てるのではなく <span class="text-cyan-700">"磨く"</span></div>
   <div class="text-xs text-neutral-600 leading-snug mt-0.5">
-    SSR + Hydration のメンタルモデルは依然強力。全部やり直すのは過剰、<span class="font-semibold">型安全性で進化</span>させて必要な時だけサーバーに委譲
+    <span class="font-semibold">SPA + SSR + Hydration</span> のメンタルモデルは依然強力 (初回は SSR、以降はクライアントで view 組立)。全部 RSC でやり直すのは過剰 — 型安全性で進化させ必要な時だけサーバーに委譲
   </div>
 </div>
 
