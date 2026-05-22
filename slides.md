@@ -1578,9 +1578,9 @@ layout: default
 </div>
 
 <div class="bg-purple-50 p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]">
-  <div class="text-xs font-semibold tracking-widest uppercase text-purple-600 mb-1">Middleware</div>
-  <div class="text-base font-bold text-neutral-900">型付き middleware chain</div>
-  <div class="text-xs text-neutral-600 mt-1 leading-snug"><code>createMiddleware</code> + <code>beforeLoad</code> で context を型安全に伝播。<code>throw redirect()</code> で認可ガード。</div>
+  <div class="text-xs font-semibold tracking-widest uppercase text-purple-600 mb-1">"真" の Middleware</div>
+  <div class="text-base font-bold text-neutral-900">Next が <code>proxy</code> に改名した中身がこれ</div>
+  <div class="text-xs text-neutral-600 mt-1 leading-snug">route と同 runtime で動き DB / npm 自由、型付き context 伝播 + <code>throw redirect()</code>。Next 旧 middleware は Edge 限定 reverse proxy。</div>
 </div>
 
 <div class="bg-rose-50 p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]">
