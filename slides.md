@@ -232,7 +232,7 @@ layout: default
     <li>· End-to-end type safety <span class="text-neutral-400">／ 端まで型安全</span></li>
     <li>· Schema-driven search params <span class="text-neutral-400">／ スキーマで検証する URL クエリ</span></li>
     <li>· Built-in caching / prefetching <span class="text-neutral-400">／ <span class="font-semibold">loader 結果</span>のキャッシュ + hover prefetch (Query と併用可)</span></li>
-    <li>· Nested layouts, transitions <span class="text-neutral-400">／ 入れ子レイアウト・遷移</span></li>
+    <li>· Nested layouts + per-route pending/error <span class="text-neutral-400">／ 入れ子レイアウト + <code>pendingMs</code> でチラつき防止 (Next にはない delay 制御)</span></li>
   </ul>
 </div>
 
