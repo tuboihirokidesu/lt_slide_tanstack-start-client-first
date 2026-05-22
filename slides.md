@@ -231,7 +231,7 @@ layout: default
   <ul class="text-xs text-neutral-600 mt-2 space-y-0.5">
     <li>· End-to-end type safety <span class="text-neutral-400">／ 端まで型安全</span></li>
     <li>· Schema-driven search params <span class="text-neutral-400">／ スキーマで検証する URL クエリ</span></li>
-    <li>· Built-in caching / prefetching <span class="text-neutral-400">／ キャッシュ・プリフェッチ内蔵</span></li>
+    <li>· Built-in caching / prefetching <span class="text-neutral-400">／ <span class="font-semibold">loader 結果</span>のキャッシュ + hover prefetch (Query と併用可)</span></li>
     <li>· Nested layouts, transitions <span class="text-neutral-400">／ 入れ子レイアウト・遷移</span></li>
   </ul>
 </div>
@@ -256,7 +256,7 @@ layout: default
 
 <v-click>
 
-<div class="mt-4 p-3 bg-neutral-900 text-white rounded-lg">
+<div class="mt-2 p-2.5 bg-neutral-900 text-white rounded-lg">
   <span class="text-xs font-semibold tracking-widest uppercase opacity-60">README より</span>
   <div class="text-sm font-medium mt-0.5">"All the power of <span class="text-cyan-400">TanStack Router</span>, plus full-stack features."</div>
   <div class="text-xs opacity-70 mt-0.5">→ Router の全機能に、SSR / Server Functions / deployment を足したもの。</div>
