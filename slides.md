@@ -185,20 +185,20 @@ stars: 14.5k+  forks: 1.7k+
 <div class="grid grid-cols-3 gap-3 mt-3 text-center">
   <div class="bg-emerald-50 p-2 rounded-lg">
     <div class="text-xs font-semibold tracking-widest uppercase text-emerald-600">react-router/src</div>
-    <div class="text-xl font-black text-emerald-500 mt-0.5">45 <span class="text-xs font-bold">files</span> · 187<span class="text-xs">KB</span></div>
+    <div class="text-xl font-black text-emerald-500 mt-0.5">46 <span class="text-xs font-bold">files</span> · 187<span class="text-xs">KB</span></div>
   </div>
   <div class="bg-cyan-50 p-2 rounded-lg">
     <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600">react-start/src</div>
-    <div class="text-xl font-black text-cyan-500 mt-0.5">12 <span class="text-xs font-bold">files</span> · 2.5<span class="text-xs">KB</span></div>
+    <div class="text-xl font-black text-cyan-500 mt-0.5">17 <span class="text-xs font-bold">files</span> · 3.8<span class="text-xs">KB</span></div>
   </div>
   <div class="bg-neutral-900 text-white p-2 rounded-lg">
     <div class="text-xs font-semibold tracking-widest uppercase opacity-60">逆算</div>
-    <div class="text-xl font-black text-amber-400 mt-0.5">Router ≒ Start の <span class="text-cyan-400">73 倍</span></div>
+    <div class="text-xl font-black text-amber-400 mt-0.5">Router ≒ Start の <span class="text-cyan-400">49 倍</span></div>
   </div>
 </div>
 
 <p class="mt-2 text-sm text-neutral-700">
-  → src 実測でも Start は Router の <span class="font-bold text-cyan-600">1.4%</span>。<span class="font-bold">"Start の 90% は Router"</span> は誇張ではなく実測。
+  → src 実測でも Start は Router の <span class="font-bold text-cyan-600">2.0%</span>。<span class="font-bold">"Start の 90% は Router"</span> は誇張ではなく実測。
 </p>
 
 </v-click>
@@ -206,7 +206,8 @@ stars: 14.5k+  forks: 1.7k+
 <!--
 1 つ目の事実。`github.com/TanStack/start` は実在しない (404)。Start の開発は `TanStack/router` リポジトリ内で進む。
 左：404 のキャプチャ / 右：`TanStack/router` の description にすでに "client-first" / "server-capable" / "full-stack framework" と書かれている。
-"Start の 90% は Router" は感覚値ではなく実測 — `react-router/src` (45 files, 187KB) vs `react-start/src` (12 files, 2.5KB) で 73 倍差。
+"Start の 90% は Router" は感覚値ではなく実測 — `react-router/src` (46 files, 187KB) vs `react-start/src` (17 files, 3.8KB) で 49 倍差。
+※ RSC ファイル群 (rsc.tsx / rsc.rsc.ts / server.rsc.ts / hydration.ts 等) の追加で Start 側が肥えた結果、半年前の "73 倍" から縮小。
 LT で 1 番のつかみ。「Start は薄い層」という主張の物量的裏付け。
 -->
 
@@ -278,7 +279,7 @@ layout: default
 
 # <span class="text-4xl font-extrabold tracking-tight">2 系統の薄いスタックを Vite plugin で繋ぐ</span>
 
-<p class="text-sm text-neutral-600 mt-2">ユーザーは <span class="font-bold">Start 系</span> と <span class="font-bold">Router 系</span> の 2 つを install する。Vite plugin が両者を繋いで 1 つのフルスタック framework になる。外部依存は <code>pathe</code> 1 つだけ。</p>
+<p class="text-sm text-neutral-600 mt-2">ユーザーは <span class="font-bold">Start 系</span> と <span class="font-bold">Router 系</span> の 2 つを install する。Vite plugin が両者を繋いで 1 つのフルスタック framework になる。ランタイム (<code>react-start</code>) の外部依存は <code>pathe</code> のみ。</p>
 
 <div class="grid grid-cols-2 gap-4 mt-4">
 
@@ -350,7 +351,10 @@ layout: default
 - @tanstack/react-start を import しても、react-router / router-core は transitive に同梱されない
 - 1 つの "framework" に見えるのは Vite plugin が繋いでいるから
 
-外部依存は `pathe` 1 つだけ — それ以外は全部 workspace 内 (router monorepo 内で完結)。
+外部依存については丁寧に: `@tanstack/react-start` (ランタイムエントリ) は外部依存 `pathe` 1 つだけ。
+`start-client-core` も外部は `seroval` 1 つ (型付き serialization で createServerFn の RPC を実現)。
+ただし `start-plugin-core` (build/dev 用 Vite plugin) は Babel / Rolldown plugin utils / cheerio / lightningcss / srvx / zod など 16 個の外部依存を持つ — これは build-time の話。
+つまり: ランタイム = 極小 / build-time = 普通の Vite plugin、というのが正確。
 依存が極端にミニマルだからこそ Router の進化がそのまま Start に乗る。
 -->
 
@@ -418,13 +422,15 @@ layout: default
 
 <p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">Code · The Smoking Gun</p>
 
-# <span class="text-4xl font-extrabold tracking-tight"><code>@tanstack/react-start</code> のソースは <span class="text-cyan-600">2 行</span></span>
+# <span class="text-4xl font-extrabold tracking-tight"><code>react-start</code> の "実コード" は <span class="text-cyan-600">30 行</span></span>
 
-<p class="text-sm text-neutral-600 mt-2">前ページで「薄いエントリ」と書いた根拠。<code>react-start/src/index.ts</code> の <span class="font-bold">全文</span>がこれ。</p>
+<p class="text-sm text-neutral-600 mt-2"><code>react-start/src/index.ts</code> は <span class="font-bold">ほぼ全部 re-export</span> — 実装らしい実装は <code>useServerFn</code> という React フック <span class="font-bold">1 つ・30 行</span> に集約。</p>
 
-```ts {all|1|2|all}{lines:true}
-export { useServerFn } from './useServerFn'
-export * from '@tanstack/start-client-core'
+```ts {all|1-2|4|all}{lines:true}
+export { useServerFn } from './useServerFn'   // ← 唯一の "実コード"
+export * from '@tanstack/start-client-core'   // ← core 丸ごと
+
+// ※ 厳密には、この下に Vite SSR cycle 回避用の明示 re-export が数行続く (2026-05-21 追加)
 ```
 
 <div class="grid grid-cols-2 gap-4 mt-4">
@@ -432,8 +438,8 @@ export * from '@tanstack/start-client-core'
 <v-click>
 
 <div class="bg-cyan-50 p-3 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-1">L1 — 唯一の "実コード"</div>
-  <div class="text-xs text-neutral-700"><code>useServerFn</code> フック (前スライドで触れた、コンポーネントから server function を呼ぶ用)。中身は <span class="font-bold">たった 35 行</span>。</div>
+  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-1">唯一の "実コード"</div>
+  <div class="text-xs text-neutral-700"><code>useServerFn</code> フック <span class="font-bold">30 行</span> — redirect / error を Router に連携するだけ。</div>
 </div>
 
 </v-click>
@@ -441,8 +447,8 @@ export * from '@tanstack/start-client-core'
 <v-click>
 
 <div class="bg-emerald-50 p-3 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-emerald-600 mb-1">L2 — 残り全部</div>
-  <div class="text-xs text-neutral-700"><code>createServerFn</code> / <code>createMiddleware</code> 等の public API は、下のレイヤー <code>start-client-core</code> から<span class="font-bold">丸ごと再エクスポート</span>。</div>
+  <div class="text-xs font-semibold tracking-widest uppercase text-emerald-600 mb-1">残り全部 = re-export</div>
+  <div class="text-xs text-neutral-700">2 日前 (<span class="font-bold">2026-05-21</span>) に増えた行は <span class="font-bold">Vite のバグ workaround</span>。Start 側のロジック追加ではない。</div>
 </div>
 
 </v-click>
@@ -459,18 +465,21 @@ export * from '@tanstack/start-client-core'
 </v-click>
 
 <!--
-決定的証拠。`@tanstack/react-start` のメインエントリ `src/index.ts` はたった 2 行。
-1 行目：`useServerFn` フックのエクスポート (クライアントの React コンポーネントから server function を呼ぶ際のラッパー、redirect/error 連携用)。実装は 35 行。
-2 行目：`@tanstack/start-client-core` を丸ごと再エクスポート (createServerFn / createMiddleware / createIsomorphicFn など)。
+決定的証拠。`@tanstack/react-start` の "実コード" は useServerFn フックの 30 行のみ。
+スライドに出している `src/index.ts` の構造:
+- 1 行目: `useServerFn` のエクスポート (React 固有の "実コード")
+- 2 行目: `start-client-core` を `export *` で丸ごと再エクスポート
+- 4 行目以降 (スライドには省略): 2026-05-21 (commit ce61fa2) に追加された explicit re-export。
+  - 理由は Vite SSR cold-start cycle (vitejs/vite#22491) の回避 — `export *` は遅延 bind なので循環参照中に名前が一瞬未定義になる事故が起きるため、public API を明示的に "shadow" して link time に予約する
+  - これは Start 側のロジック追加ではなく Vite ランタイムへの防衛策
 
-メッセージ：「`@tanstack/react-start` は start-client-core の React 用 adapter にすぎない」。
-- React 固有のロジックは useServerFn の 35 行に閉じ込められている
+メッセージ：「`@tanstack/react-start` は start-client-core の React 用 adapter にすぎない」は今も真。
+- React 固有のロジックは useServerFn の 30 行に閉じ込められている
 - public API (createServerFn 等) は framework 非依存な core 側にある
 - だから solid-start も同じ構造で薄く成立する (= framework adapter pattern)
-
-Fact 03 (2 系統 + plugin) の主張を「Start 側のスタックは adapter pattern で構成されている」という新しい角度から閉じる。
-LT で印象に残るスライドにしたい — 2 行 / 35 行 の数字を強調しつつ、最後で "adapter pattern" の meta-insight を投下。
+- 質問が来たら: 「2 日前まではこれ literal に 2 行でした」と笑い話に
 -->
+
 
 ---
 layout: section
@@ -568,9 +577,9 @@ layout: two-cols-header
        ↓
 2025-09  Start v1 RC アナウンス
        ↓ feature-complete / API stable
-2026-04  Start も RSC を experimental サポート
+2026-04  Start に react-start-rsc を独立 package 化
        ↓ isomorphic-first / Composite Components
-2026-05  まだ RC (1.0 日付は未公表)
+2026-05  Solid Start は v2 beta 並走 / React Start は 1.x
 ```
 
 </div>
@@ -613,7 +622,8 @@ layout: two-cols-header
 
 <!--
 歴史的背景：2020 Next.js getServerSideProps → 2023 RSC でデフォルトが Server-first になった。
-タイムライン補足：2025-09 Start v1 RC、2026-04 Start も RSC を experimental サポート、2026-05 時点でまだ RC (1.0 日付は未公表)。
+タイムライン補足：2025-09 Start v1 RC、2026-04 RSC サポートは `@tanstack/react-start-rsc` という独立 package として monorepo に追加 (react-start の workspace deps に既に組込済 = もはや experimental flag の話ではない)。
+2026-05 時点: Solid Start は 2.0 beta シリーズが進行中、React Start は 1.168.x、Vue Start も並走。
 混同注意：`@tanstack/react-start` の package version は 1.x だが、サイト上の product status は RC。
 
 右側は Tanner Linsley の RSC に対するスタンス：
@@ -984,7 +994,7 @@ layout: default
 
 # <span class="text-4xl font-extrabold tracking-tight">RSC も "ただの非同期データ"</span>
 
-<p class="text-sm text-neutral-600 mt-2">サーバーで <code>renderToReadableStream(&lt;JSX/&gt;)</code>、クライアントで <code>useQuery</code> で受けるだけ。<span class="font-bold">境界はインポートのみ</span>、コードに "魔法" は出てこない。<span class="text-xs text-neutral-400">2026-04 React Paris / BeJS で実演</span></p>
+<p class="text-sm text-neutral-600 mt-2">サーバーで <code>renderToReadableStream(&lt;JSX/&gt;)</code>、クライアントで <code>useQuery</code> で受けるだけ。<span class="font-bold">境界はインポートのみ</span>、コードに "魔法" は出てこない。<span class="text-xs text-neutral-400">2026-04 React Paris / BeJS で実演 — 既に <code>@tanstack/react-start-rsc</code> として monorepo に組込済</span></p>
 
 ```tsx {all|2-7|9-13|all}{lines:true}
 // server: renderToReadableStream で JSX → RSC payload (react-server-dom 系)
@@ -1331,7 +1341,7 @@ layout: default
 
 # <span class="text-4xl font-extrabold tracking-tight">クエリパラメータが "本物のState" になる</span>
 
-<p class="text-sm text-neutral-600 mt-1">Zod スキーマ + middleware で、URL を <span class="font-bold">型安全 / 検証付き / 共有可能</span>な状態管理にする。<span class="text-xs text-neutral-400">※ Zod v4 ならスキーマを直接 validateSearch に渡してもよい</span></p>
+<p class="text-sm text-neutral-600 mt-1">Zod スキーマ + middleware で、URL を <span class="font-bold">型安全 / 検証付き / 共有可能</span>な状態管理にする。<span class="text-xs text-neutral-400">※ <code>zod-adapter</code> / <code>valibot-adapter</code> / <code>arktype-adapter</code> が monorepo に first-class で並ぶ</span></p>
 
 ```ts {all|2-6|8-9|10|11|all}{lines:true}
 // Zod スキーマで URL の形を定義
@@ -1566,8 +1576,8 @@ layout: default
 
 <div class="bg-cyan-50 p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]">
   <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-1">Platform</div>
-  <div class="text-base font-bold text-neutral-900">デプロイ先非依存</div>
-  <div class="text-xs text-neutral-600 mt-1 leading-snug">Vite plugin として動く。Node / Bun / Deno / Workers / Lambda にそのまま乗る。<span class="font-semibold">Vercel 結合なし</span>。</div>
+  <div class="text-base font-bold text-neutral-900">Nitro 経由でどこでも</div>
+  <div class="text-xs text-neutral-600 mt-1 leading-snug"><code>@tanstack/nitro-v2-vite-plugin</code> 経由で <span class="font-semibold">Nuxt と同じ Nitro</span>。Node / Bun / Deno / Workers / Lambda にそのまま乗る。<span class="font-semibold">Vercel 結合なし</span>。</div>
 </div>
 
 <div class="bg-emerald-50 p-3 rounded-lg transition-all duration-200 hover:scale-[1.02]">
