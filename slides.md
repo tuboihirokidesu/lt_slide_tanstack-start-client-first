@@ -908,6 +908,75 @@ Start はこの "穴" 自体を作らない設計 (= 次スライドの createSe
 -->
 
 ---
+layout: two-cols-header
+---
+
+<p class="text-xs font-semibold tracking-widest uppercase text-amber-600 mb-2">Payload Cost</p>
+
+# <span class="text-4xl font-extrabold tracking-tight">Props は RSC payload に "焼き付く"</span>
+
+::left::
+
+```tsx {all|2-4|6-7|10-12|all}{lines:true}
+// app/page.tsx ── Server (データ取得)
+async function Page() {
+  const scores = await db.score.findMany() // 10 万件
+  const apiKey = process.env.OPENAI_KEY!   // サーバー秘密
+
+  // ↓ scores も apiKey も RSC payload に焼き付く
+  return <Chart scores={scores} apiKey={apiKey} />
+}
+
+// Chart.tsx ── 'use client'
+'use client'
+function Chart({ scores, apiKey }) { /* … */ }
+```
+
+::right::
+
+## <span class="text-xl font-bold">起きること</span>
+
+<v-clicks>
+
+<div class="bg-amber-50 p-4 rounded-lg mt-3">
+  <div class="text-xs font-semibold tracking-widest uppercase text-amber-600">サイズの肥大</div>
+  <div class="text-sm mt-1">props 1 つで <span class="font-bold">100KB → 500KB</span> も普通に起きる</div>
+</div>
+
+<div class="bg-amber-50 p-4 rounded-lg">
+  <div class="text-xs font-semibold tracking-widest uppercase text-amber-600">秘匿情報の漏洩</div>
+  <div class="text-sm mt-1">Server の変数も初回 HTML に <span class="font-bold">文字列として混入</span></div>
+</div>
+
+<div class="bg-amber-50 p-4 rounded-lg">
+  <div class="text-xs font-semibold tracking-widest uppercase text-amber-600">対策が "規律頼み"</div>
+  <div class="text-sm mt-1"><code>taintObjectReference</code> は experimental — 明示利用必須</div>
+</div>
+
+</v-clicks>
+
+<v-click>
+
+<p class="mt-4 text-sm text-neutral-700 italic">
+  → Start は <code class="text-cyan-600 font-mono">createServerFn</code> で<span class="font-bold text-cyan-600">境界がコードに見える</span>。漏れる経路を実装者が把握できる。
+</p>
+
+</v-click>
+
+<!--
+chot inc. の Zenn 記事 (https://zenn.dev/chot/articles/e0e2203d12bff8) の論点。
+Server Component から Client Component に渡した props は、シリアライズされて RSC payload (= 初回 HTML の <script> タグ) に焼き付けられる。
+
+3 つのコスト：
+- サイズ肥大: chot の実測で、1 億要素 (10000²) の配列を props で渡すと payload が 100KB → 500KB へ
+- 秘匿情報の漏洩: process.env / DB の "サーバー内に閉じておくべき" 値を Client props に載せると HTML に文字列として登場
+- 対策が規律頼み: React の `taintObjectReference` / `taintUniqueValue` は experimental。明示利用しないと何も守らない
+
+slide 16 (ドーナツホール = 認知のホール) → このスライド (payload の物理コスト) → 次スライド (Start なら payload を Query で明示扱い) の流れで、
+Server-Client 境界の "見えなさ" がもたらす痛みを 2 種類セットで提示する。
+-->
+
+---
 layout: default
 ---
 
@@ -1330,70 +1399,6 @@ Tanner の主張："URL は最古のステート管理 — 高速・共有可能
 - retainSearchParams で theme / lang など横断パラメータをルート遷移しても保持
 - useSearch({ select, structuralSharing }) で必要なパラメータだけ subscribe → 不要な再レンダリングを抑制
 JSON-first なので入れ子オブジェクトや配列も自然に扱える。検索 / フィルタ画面で威力。
--->
-
----
-layout: default
----
-
-<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">Performance</p>
-
-# <span class="text-4xl font-extrabold tracking-tight">Client-first でも SSR は遅くない</span>
-
-<div class="grid grid-cols-2 gap-6 mt-6">
-
-<div class="bg-cyan-50 p-5 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">SSR Benchmark</div>
-
-  <div class="text-sm text-neutral-700 leading-relaxed">
-    Platformatic の corrected benchmark では、TanStack Start は 1,000 req/s を 100% success で処理。
-  </div>
-
-  <div class="mt-3 text-4xl font-black text-cyan-500">18ms</div>
-  <div class="text-xs text-neutral-500 mt-1">average latency / corrected result</div>
-
-  <div class="text-xs text-neutral-600 mt-3 leading-relaxed">
-    React Router も 19ms 程度で近く、Next.js は同条件で苦戦。
-  </div>
-</div>
-
-<div class="bg-neutral-900 text-white p-5 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-amber-400 mb-2">Vite 8 + Rolldown</div>
-
-  <div class="text-sm leading-relaxed opacity-90">
-    Vite 8 は Rolldown を標準 bundler に採用。Rolldown 1.0 stable は 2026-05-07 リリース。
-  </div>
-
-  <div class="mt-3 text-4xl font-black text-amber-400">10–30x</div>
-  <div class="text-xs opacity-60 mt-1">faster builds と公式が説明</div>
-
-  <div class="text-xs opacity-70 mt-3 leading-relaxed">
-    Start は Vite plugin として構成されるため、Vite の toolchain 進化を受けやすい。
-  </div>
-</div>
-
-</div>
-
-<v-click>
-
-<div class="mt-4 p-3 bg-gray-100 rounded-lg">
-  <div class="text-sm font-bold">
-    takeaway: 「client-first」は SSR を捨てる設計ではない。
-  </div>
-  <div class="text-xs text-neutral-600 mt-0.5">
-    必要な場所では SSR も速く、build pipeline は Vite / Rolldown の進化に乗れる。
-  </div>
-</div>
-
-</v-click>
-
-<!--
-「Client-first は SSR を諦めた設計ではない」という反論スライド。
-Platformatic の corrected benchmark で TanStack Start は 1,000 req/s を 100% 成功、平均 18ms。
-React Router (19ms) と同等、Next.js は同条件で苦戦。
-ビルド側：Vite 8 が Rolldown を標準採用、Rolldown 1.0 stable は 2026-05-07 リリース。公式説明で 10–30x faster builds。
-Start は Vite plugin なので toolchain の進化に直接乗れる → Tanner Linsley の Server Functions (GET) なら HTTP キャッシュも効くという PodRocket の主張も合わせて補足できる。
-「クライアントファースト = 妥協」という誤解を数字で消すスライド。
 -->
 
 ---
