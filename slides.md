@@ -920,22 +920,21 @@ layout: two-cols-header
 
 ::left::
 
-```tsx {all|2-6|8-12|14-16|all}{lines:true}
-// page.tsx ── Server (合成するだけ)
+```tsx {all|2-4|6-10|12-14|all}{lines:true}
+// page.tsx ── Server (UserCard 用 data を ここで 取得)
 async function Page() {
-  return (
-    <Modal><UserCard /></Modal>  /* server → client → server */
-  )
+  const user = await db.user.current()             // ← 本来 UserCard の関心事
+  return <Modal><UserCard user={user} /></Modal>   /* server→client→server */
 }
-// Modal.tsx ── 'use client' (state を持つ必要がある)
+// Modal.tsx ── 'use client' (state)
 'use client'
 function Modal({ children }) {
   const [open] = useState(false)
   return open && <div>{children}</div>
 }
-// UserCard.tsx ── server (DB / secret に触れる必要がある)
-async function UserCard() {
-  return <div>{(await db.user.current()).name}</div>
+// UserCard.tsx ── 自分で fetch できない
+function UserCard({ user }) {                      // ← data は props 経由
+  return <div>{user.name}</div>
 }
 ```
 
@@ -1060,7 +1059,7 @@ layout: default
 
 # <span class="text-4xl font-extrabold tracking-tight">RSC も "ただの非同期データ"</span>
 
-<p class="text-sm text-neutral-600 mt-2">サーバーで <code>renderToReadableStream(&lt;JSX/&gt;)</code>、クライアントで <code>useQuery</code> で受けるだけ。<span class="font-bold">境界はインポートのみ</span>、コードに "魔法" は出てこない。<span class="text-xs text-neutral-400">2026-04 React Paris / BeJS で実演 — 既に <code>@tanstack/react-start-rsc</code> として monorepo に組込済</span></p>
+<p class="text-sm text-neutral-600 mt-2">サーバーで <code>renderToReadableStream(&lt;JSX/&gt;)</code>、クライアントで <code>useQuery</code> で受けるだけ。<span class="text-xs text-neutral-400">— <code>@tanstack/react-start-rsc</code> として monorepo 組込済</span></p>
 
 ```tsx {all|2-7|9-13|all}{lines:true}
 // server: renderToReadableStream で JSX → RSC payload (react-server-dom 系)
@@ -1078,36 +1077,14 @@ const { data: postJsx } = useQuery({
 return <>{postJsx}</>
 ```
 
-<div class="grid grid-cols-3 gap-3 mt-3">
-
 <v-click>
 
-<div class="bg-cyan-50 p-2 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-cyan-600">JSX = data</div>
-  <div class="text-xs mt-0.5">RSC を Query で扱う</div>
+<div class="mt-3 px-3 py-2 bg-neutral-900 text-white rounded-lg text-xs">
+  <span class="opacity-60">公式 docs:</span> "Server Component output is <span class="text-cyan-400">the same as any other data</span> — <span class="text-cyan-400 font-bold">no special 'component cache'</span>."
+  <div class="opacity-80 mt-0.5">→ 「Server Component の出力も他データと同じ扱い — <span class="text-cyan-400 font-semibold">専用の "component cache" は要らない</span>」<span class="opacity-60 ml-1">= staleTime / gcTime / invalidate がそのまま効く</span></div>
 </div>
 
 </v-click>
-
-<v-click>
-
-<div class="bg-emerald-50 p-2 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-emerald-600">Validation</div>
-  <div class="text-xs mt-0.5"><code>.inputValidator()</code> で型検証</div>
-</div>
-
-</v-click>
-
-<v-click>
-
-<div class="bg-amber-50 p-2 rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase text-amber-600">Cache</div>
-  <div class="text-xs mt-0.5"><code>staleTime</code> / <code>gcTime</code> 直接適用</div>
-</div>
-
-</v-click>
-
-</div>
 
 <!--
 2026-04 BeJS / React Paris で Tanner Linsley が実演した正式 API。
@@ -1233,9 +1210,10 @@ export const Route = createFileRoute('/posts/$postId')({
 
 <v-click>
 
-<p class="mt-5 text-sm text-neutral-700">
-  Client-first だから可能 — ルートツリーが静的に解析でき、クライアント側 TypeScript で全推論される。
-</p>
+<div class="mt-3 px-3 py-1.5 bg-neutral-900 text-white rounded-lg text-xs">
+  <span class="opacity-60">公式 docs:</span> "In the age of <span class="text-cyan-400">AI-assisted development</span>, end-to-end type safety should be <span class="text-cyan-400 font-bold">non-negotiable</span>."
+  <div class="opacity-80 mt-0.5">→ 「<span class="text-cyan-400">AI 支援開発の時代</span>、end-to-end な型安全性は <span class="text-cyan-400 font-semibold">妥協できない要件</span>」</div>
+</div>
 
 </v-click>
 
