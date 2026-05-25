@@ -747,11 +747,15 @@ layout: default
 
 <v-click>
 
-<div class="mt-4 p-3 bg-neutral-900 text-white rounded-lg">
-  <div class="text-xs font-semibold tracking-widest uppercase opacity-60">使い所</div>
-  <div class="text-sm font-medium mt-0.5">
-    複雑なコンポーネントツリーを持つ <span class="text-cyan-400">ダッシュボード / SaaS / 管理画面</span> に最適。React tree 全体を server で組み立てるコストを払わず、初期 data だけ先回りで渡せる。
+<div class="mt-3 p-3 bg-neutral-900 text-white rounded-lg">
+  <div class="text-xs font-semibold tracking-widest uppercase opacity-60">複雑な component を SSR すると重なる 4 つのコスト</div>
+  <div class="grid grid-cols-4 gap-2 mt-1.5 text-xs">
+    <div><span class="text-cyan-400 font-bold">① server CPU</span><div class="opacity-70 text-[10px]">renderToString が遅い</div></div>
+    <div><span class="text-cyan-400 font-bold">② HTML 転送量</span><div class="opacity-70 text-[10px]">毎リクエスト肥大</div></div>
+    <div><span class="text-cyan-400 font-bold">③ hydration</span><div class="opacity-70 text-[10px]">main thread block</div></div>
+    <div><span class="text-cyan-400 font-bold">④ TTI 悪化</span><div class="opacity-70 text-[10px]">"見えるが触れない"</div></div>
   </div>
+  <div class="text-xs opacity-80 mt-2">→ 認証後の <span class="font-semibold">複雑なダッシュボード / SaaS</span> はコスト大 + SEO 不要 → <span class="text-cyan-400 font-semibold">'data-only' で初期データだけ先回り</span>が ROI 最良</div>
 </div>
 
 </v-click>
