@@ -1471,6 +1471,7 @@ layout: two-cols-header
   <ul class="space-y-2 text-sm">
     <li class="flex gap-2"><span class="font-bold">·</span> ダッシュボード / 管理画面</li>
     <li class="flex gap-2"><span class="font-bold">·</span> SaaS の認証後の体験</li>
+    <li class="flex gap-2"><span class="font-bold">·</span> 状態が複雑なインタラクション</li>
     <li class="flex gap-2"><span class="font-bold">·</span> 社内ツール（静的ホスティング可）</li>
     <li class="flex gap-2"><span class="font-bold">·</span> 既存 SPA を壊さず移行したい</li>
     <li class="flex gap-2"><span class="font-bold">·</span> Type-safe routing 最優先</li>
@@ -1497,6 +1498,80 @@ layout: two-cols-header
 左 (Start が刺さる)：ダッシュボード / 管理画面 / SaaS 認証後 / 社内ツール / 既存 SPA を壊さず移行したい / Type-safe routing 最優先 / LLM チャット (async function* で型付きストリーミング、API キーは server function に隔離)。
 右 (Next.js / Remix が刺さる)：マーケサイト / メディア / e-commerce (ISR / streaming) / 大量のサーバー側データ集約 / Vercel + RSC エコシステム / 採用市場の安心感。
 ポイント：ツール選択はアプリケーションの特性次第。"Start ファン" として登壇しているが、宗教戦争にしない。
+-->
+
+---
+layout: default
+---
+
+<p class="text-xs font-semibold tracking-widest uppercase text-cyan-600 mb-2">In the Wild · 2025-2026</p>
+
+# <span class="text-4xl font-extrabold tracking-tight">Next.js から Start への移行が <span class="text-cyan-600">実際に起きてる</span></span>
+
+<p class="text-sm text-neutral-600 mt-1">有名 SaaS / 個人ブログ / 動画まで連続して移行報告。共通テーマは <span class="font-bold">less magic / 型安全 / dev 速度</span>。</p>
+
+<div class="grid grid-cols-4 gap-3 mt-4">
+
+<a href="https://appwrite.io/blog/post/why-developers-leaving-nextjs-tanstack-start" class="block bg-white border border-neutral-200 rounded-lg overflow-hidden hover:scale-[1.02] transition-all duration-200 no-underline">
+  <img src="https://appwrite.io/images/blog/why-developers-leaving-nextjs-tanstack-start/cover.avif" class="w-full h-24 object-cover" />
+  <div class="p-2">
+    <div class="text-[10px] font-semibold tracking-widest uppercase text-cyan-600">Appwrite · 2025-10</div>
+    <div class="text-xs font-bold leading-tight mt-0.5 text-neutral-900">Why developers are leaving Next.js for TanStack Start</div>
+    <div class="text-[10px] text-neutral-500 mt-1">"less magic, more control"</div>
+  </div>
+</a>
+
+<a href="https://www.inngest.com/blog/migrating-off-nextjs-tanstack-start" class="block bg-white border border-neutral-200 rounded-lg overflow-hidden hover:scale-[1.02] transition-all duration-200 no-underline">
+  <img src="https://inngest.com/assets/blog/migrating-off-nextjs-tanstack-start/featured-image.png" class="w-full h-24 object-cover" />
+  <div class="p-2">
+    <div class="text-[10px] font-semibold tracking-widest uppercase text-emerald-600">Inngest · 2026-01</div>
+    <div class="text-xs font-bold leading-tight mt-0.5 text-neutral-900">Local dev <span class="text-emerald-600">83% 高速化</span> — Why we migrated off Next.js</div>
+    <div class="text-[10px] text-neutral-500 mt-1">10-12s → ~2s (Vite HMR)</div>
+  </div>
+</a>
+
+<a href="https://noe.tatoud.com/blog/why-i-migrated-from-astro-to-tanstack-start" class="block bg-white border border-neutral-200 rounded-lg overflow-hidden hover:scale-[1.02] transition-all duration-200 no-underline">
+  <img src="https://noe.tatoud.com/.netlify/images?url=%2Fassets%2Fhero-C43CG1Bz.png&w=1920&q=75" class="w-full h-24 object-cover" />
+  <div class="p-2">
+    <div class="text-[10px] font-semibold tracking-widest uppercase text-amber-600">Noé Tatoud · 2026-04</div>
+    <div class="text-xs font-bold leading-tight mt-0.5 text-neutral-900">Why I migrated from Astro to TanStack Start</div>
+    <div class="text-[10px] text-neutral-500 mt-1">型安全 / AI-assisted 開発</div>
+  </div>
+</a>
+
+<a href="https://youtu.be/Sc5ca-VJdxY" class="block bg-white border border-neutral-200 rounded-lg overflow-hidden hover:scale-[1.02] transition-all duration-200 no-underline">
+  <img src="https://img.youtube.com/vi/Sc5ca-VJdxY/maxresdefault.jpg" class="w-full h-24 object-cover" />
+  <div class="p-2">
+    <div class="text-[10px] font-semibold tracking-widest uppercase text-purple-600">Theo (T3 Chat)</div>
+    <div class="text-xs font-bold leading-tight mt-0.5 text-neutral-900">T3 Chat を Next.js → Start に全面移行</div>
+    <div class="text-[10px] text-neutral-500 mt-1">"自分たちでコードを完全に制御"</div>
+  </div>
+</a>
+
+</div>
+
+<v-click>
+
+<div class="mt-4 p-3 bg-neutral-900 text-white rounded-lg">
+  <span class="text-xs font-semibold tracking-widest uppercase opacity-60">共通の動機</span>
+  <div class="text-sm font-medium mt-0.5">
+    <span class="text-cyan-400">型安全</span> · <span class="text-cyan-400">Vite の dev 速度</span> · <span class="text-cyan-400">"use client" 不要</span> · <span class="text-cyan-400">deploy 自由度</span> — 個別の好みではなく <span class="font-bold">構造的な理由</span>で選ばれている
+  </div>
+</div>
+
+</v-click>
+
+<!--
+2025 後半から 2026 にかけて、実際に Next.js から TanStack Start へ移行した記事 / 動画が連続して出ている事実を見せる。
+1. Appwrite (2025-10, Tessa Mero): "Why developers are leaving Next.js for TanStack Start" — Appwrite はバックエンドサービス大手、その公式ブログでこの記事が出ているのは業界の動向として強いシグナル。
+2. Inngest (2026-01, Jacob Heric): "Reducing local dev time by 83%" — 具体的な数字 (10-12s → ~2s)。Inngest はサーバーレスワークフロー基盤、自社プロダクトの開発体験向上のために移行。
+3. Noé Tatoud (2026-04): 個人ブログでも移行報告。型安全と AI-assisted 開発 (= Cursor / Claude Code 等) との相性を強調。
+4. YouTube 動画 (Sc5ca-VJdxY): Theo (T3 Chat 運営) が T3 Chat の基盤を Next.js → TanStack Start に移行した経緯を解説。
+   元々 Next.js を独自ハックで使ってたが、フロント/バックエンドの高度な同期 + client 主導の快適な操作性のため移行決断。
+   Nitro を使ったルーティング最適化、大規模コード書き換え等の技術的困難を共有。
+   "自分たちでコードを完全に制御し保守性を高めるための戦略" であり、「完璧なフレームワークは存在しない、製品規模とチームのニーズで最適化し続けることが重要」と締める。
+共通点: 主観的な好み (見た目とか書きやすさ) ではなく、構造的な理由 (型 / 速度 / boundary / deploy) で選ばれている。
+LT のラスト前に置くことで「これは私の偏見ではない、業界が動いている」と示せる。
 -->
 
 ---
